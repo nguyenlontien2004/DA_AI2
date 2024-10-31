@@ -12,15 +12,15 @@ users_schema = UserSchema(many=True)
 def add_user_service():
     data = request.json
     if (data and ('username' in data) and ('email' in data)
-        and ('password_hash' in data)):
+        and ('password' in data)):
 
         username = request.json['username']
         email = request.json['email']
-        password_hash = request.json['password_hash']
-        created_at = request.json['created_at']
+        password = request.json['password']
+        # created_at = request.json['created_at']
 
         try:
-            new_user = User(username, email, password_hash, created_at)
+            new_user = User(username, email, password)
             db.session.add(new_user)
             db.session.commit()
             return jsonify ({"message": "Thêm người dùng thành công!"}), 201

@@ -7,3 +7,5 @@ python-dotenv
 Flask-Marshmallow
 marshmallow
 SQLAlchemy
+google-generativeai
+Flask-jwt-extended
