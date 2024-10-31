@@ -6,27 +6,29 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(100), nullable=False, unique=True)
-    password_hash = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-    def __init__(self, username, email, password_hash):
+    def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password_hash = password_hash
+        self.password = password
 
 
 class Conversation(db.Model):
     __tablename__ = 'conversations'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    started_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    started_at = db.Column(db.DateTime, default=db.func.now())
     ended_at = db.Column(db.TIMESTAMP, nullable=True)
 
     # Mỗi quan hệ với User
     user = db.relationship('User', backref=db.backref('conversations', lazy=True))
 
-    def __init__(self, user_id, ended_at=None):
+    def __init__(self, user_id, started_at, ended_at=None):
         self.user_id = user_id
+        if started_at:
+            self.started_at = started_at
         self.ended_at = ended_at
 
 
@@ -41,10 +43,11 @@ class Message(db.Model):
     # Mỗi quan hệ với Conversation
     conversation = db.relationship('Conversation', backref=db.backref('messages', lazy=True))
 
-    def __init__(self, conversation_id, sender, message):
+    def __init__(self, conversation_id, sender, message, timestamp):
         self.conversation_id = conversation_id
         self.sender = sender
         self.message = message
+        self.timestamp = timestamp
 
 
 class Feedback(db.Model):
