@@ -5,7 +5,7 @@ import google.generativeai as genai
 from datetime import datetime
 
 # Cấu hình API Key cho Gemini
-genai.configure(api_key="AIzaSyCM4T1jStyXwxHMVMmGxD_wQtqS3TlnSvE")  # Thay bằng API Key thực của bạn
+genai.configure(api_key="Thay bằng API Key")  
 
 # Cấu hình model Gemini
 generation_config = {
