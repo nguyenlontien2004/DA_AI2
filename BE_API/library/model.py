@@ -36,7 +36,7 @@ class Message(db.Model):
     __tablename__ = 'messages'
     id = db.Column(db.Integer, primary_key=True)
     conversation_id = db.Column(db.Integer, db.ForeignKey('conversations.id'), nullable=False)
-    sender = db.Column(db.Enum('user', 'chatbot'), nullable=False)
+    sender = db.Column(db.Enum('user', 'model'), nullable=False)
     message = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
