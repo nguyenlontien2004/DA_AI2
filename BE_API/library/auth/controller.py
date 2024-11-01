@@ -1,8 +1,7 @@
-# library/auth/controller.py
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
-from library.extension import db
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
+from library.extension import db, jwt, blacklist
 from library.model import User
 
 auth = Blueprint('auth', __name__)
@@ -14,18 +13,13 @@ def register():
     email = data.get("email")
     password = data.get("password")
 
-    # Kiểm tra username đã tồn tại chưa
     if User.query.filter_by(username=username).first():
         return jsonify({"error": "Tên người dùng đã tồn tại"}), 400
 
-    # Kiểm tra email đã tồn tại chưa
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email đã tồn tại"}), 400
 
-    # Mã hóa mật khẩu
     hashed_password = generate_password_hash(password)
-
-    # Tạo người dùng mới
     new_user = User(username=username, email=email, password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
@@ -40,10 +34,15 @@ def login():
 
     user = User.query.filter_by(username=username).first()
 
-    # Kiểm tra username và mật khẩu
     if not user or not check_password_hash(user.password, password):
         return jsonify({"error": "Sai tài khoản hoặc mật khẩu"}), 401
 
-    # Tạo access token
     access_token = create_access_token(identity=user.id)
     return jsonify({"access_token": access_token}), 200
+
+@auth.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]  # Lấy JWT ID của token hiện tại
+    blacklist.add(jti)  # Thêm token vào danh sách đen
+    return jsonify({"message": "Đăng xuất thành công"}), 200
