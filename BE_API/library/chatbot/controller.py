@@ -23,7 +23,7 @@ model = genai.GenerativeModel(
 )
 
 # Tạo phiên trò chuyện (session)
-chat_session = model.start_chat(history=[])
+# chat_session = model.start_chat(history=[])
 
 # Khởi tạo Blueprint cho chatbot API
 chat_bp = Blueprint('chat', __name__)
@@ -43,19 +43,33 @@ def start_chat():
         "conversation_id": new_conversation.id
     }), 200
 
-@chat_bp.route('/chat/message/<int:conv_id>', methods=['POST'])
+@chat_bp.route('/chat/message/<int:conv_id>', methods=['POST']) 
 @jwt_required()
 def chat(conv_id):
     data = request.json
-    # conversation_id = data.get("conversation_id")
     user_input = data.get("message")
     
     if not user_input:
         return jsonify({"error": "Please provide a message."}), 400
 
+    # Lấy lịch sử hội thoại từ bảng messages
+    history = Message.query.filter_by(conversation_id=conv_id).order_by(Message.timestamp).all()
+    
+    # Chuyển đổi lịch sử hội thoại thành định dạng yêu cầu
+    history_text = [
+        {
+            "role": msg.sender,
+            "parts": [{"text": msg.message}]
+        }
+        for msg in history
+    ]
+    
+    # Tạo phiên hội thoại với lịch sử
+    chat_session = model.start_chat(history=history_text)
+
     # Gửi tin nhắn từ người dùng tới chatbot
     response = chat_session.send_message(user_input)
-
+    
     # Lưu tin nhắn người dùng vào bảng messages
     user_message = Message(
         conversation_id=conv_id,
@@ -68,8 +82,8 @@ def chat(conv_id):
     # Lưu phản hồi chatbot vào bảng messages
     bot_message = Message(
         conversation_id=conv_id,
-        sender="chatbot",
-        message=response.text,
+        sender="model",
+        message=response.text,  # `response.text` chứa nội dung phản hồi của chatbot
         timestamp=datetime.now()
     )
     db.session.add(bot_message)
