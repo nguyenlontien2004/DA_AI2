@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extension import db
 from ..model import User, Conversation, Message
 import google.generativeai as genai
 from datetime import datetime
 
 # Cấu hình API Key cho Gemini
-genai.configure(api_key="Thay bằng API Key")  
+genai.configure(api_key="Thay bằng Api Key")  
 
 # Cấu hình model Gemini
 generation_config = {
@@ -28,9 +29,9 @@ chat_session = model.start_chat(history=[])
 chat_bp = Blueprint('chat', __name__)
 
 @chat_bp.route('/chat/start', methods=['POST'])
+@jwt_required()
 def start_chat():
-    data = request.json
-    user_id = data.get("user_id")
+    user_id = get_jwt_identity()
 
     # Tạo một cuộc hội thoại mới
     new_conversation = Conversation(user_id=user_id, started_at=datetime.now())
@@ -42,10 +43,11 @@ def start_chat():
         "conversation_id": new_conversation.id
     }), 200
 
-@chat_bp.route('/chat/message', methods=['POST'])
-def chat():
+@chat_bp.route('/chat/message/<int:conv_id>', methods=['POST'])
+@jwt_required()
+def chat(conv_id):
     data = request.json
-    conversation_id = data.get("conversation_id")
+    # conversation_id = data.get("conversation_id")
     user_input = data.get("message")
     
     if not user_input:
@@ -56,7 +58,7 @@ def chat():
 
     # Lưu tin nhắn người dùng vào bảng messages
     user_message = Message(
-        conversation_id=conversation_id,
+        conversation_id=conv_id,
         sender="user",
         message=user_input,
         timestamp=datetime.now()
@@ -65,7 +67,7 @@ def chat():
 
     # Lưu phản hồi chatbot vào bảng messages
     bot_message = Message(
-        conversation_id=conversation_id,
+        conversation_id=conv_id,
         sender="chatbot",
         message=response.text,
         timestamp=datetime.now()

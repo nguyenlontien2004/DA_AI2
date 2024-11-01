@@ -5,11 +5,9 @@ from .users.controller import user
 from flask_jwt_extended import JWTManager
 from .auth.controller import auth
 from .chatbot.controller import chat_bp
-from .extension import db, ma
+from .extension import db, ma, jwt
 from .model import User, Message, Conversation, Feedback
 import os
-
-jwt = JWTManager()
 
 def create_db(app):
     if not os.path.exists("library/py_chatbot.db"):
