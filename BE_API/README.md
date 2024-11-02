@@ -10,12 +10,12 @@
 3. cài các thư viện 
     pip install -r requirements.txt
 
-4. truy cập https://ai.google.dev/ -> đăng nhập và tạo api key.
-    Pase api vào file library/chatbot/controller
+4. copy file ".env copy" tạo file .env
 
-5. sử dụng xampp hoặc laragon mở mysql tạo db tên py_chatbot
+5. truy cập https://ai.google.dev/ -> đăng nhập và tạo api key.
+    Pase api vào file .env
 
-6. copy file ".env copy" tạo file .env
+6. sử dụng xampp hoặc laragon mở mysql tạo db tên py_chatbot
 
 7. chạy lệnh:
     python app.py
