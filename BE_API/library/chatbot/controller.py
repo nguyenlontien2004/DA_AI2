@@ -2,11 +2,9 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extension import db
 from ..model import User, Conversation, Message
+import os
 import google.generativeai as genai
 from datetime import datetime
-
-# Cấu hình API Key cho Gemini
-genai.configure(api_key="Thay bằng Api Key")  
 
 # Cấu hình model Gemini
 generation_config = {
@@ -22,26 +20,49 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
 )
 
-# Tạo phiên trò chuyện (session)
-# chat_session = model.start_chat(history=[])
-
 # Khởi tạo Blueprint cho chatbot API
 chat_bp = Blueprint('chat', __name__)
+
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from ..extension import db
+from ..model import Conversation
+from datetime import datetime
+import google.generativeai as genai
+
+chat_bp = Blueprint("chat", __name__)
 
 @chat_bp.route('/chat/start', methods=['POST'])
 @jwt_required()
 def start_chat():
     user_id = get_jwt_identity()
+    data = request.json
+    user_input = data.get("message", "Không có tiêu đề")  # Sử dụng mặc định nếu không có tin nhắn
 
-    # Tạo một cuộc hội thoại mới
-    new_conversation = Conversation(user_id=user_id, started_at=datetime.now())
-    db.session.add(new_conversation)
-    db.session.commit()
+    try:
+        chat_session = model.start_chat(history=[])
 
-    return jsonify({
-        "message": "Đã bắt đầu thêm hội thoại mới",
-        "conversation_id": new_conversation.id
-    }), 200
+        # Gửi tin nhắn tạo tên hội thoại
+        response = chat_session.send_message(
+            f"Hãy chỉ trả với 5-6 chữ. hãy đặt tên cho cuộc hội thoại bắt đầu bằng câu sau: '{user_input}'"
+        )
+
+        # Lấy tên cuộc hội thoại
+        conv_name = response.text if response and hasattr(response, 'text') else "Cuộc hội thoại không tên"
+
+        # Tạo một cuộc hội thoại mới trong cơ sở dữ liệu
+        new_conversation = Conversation(user_id=user_id, name=conv_name, started_at=datetime.now())
+        db.session.add(new_conversation)
+        db.session.commit()
+
+        return jsonify({
+            "message": user_input,
+            "conversation_id": new_conversation.id,
+            "conversation_name": new_conversation.name
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Đã xảy ra lỗi: {str(e)}"}), 500
 
 @chat_bp.route('/chat/message/<int:conv_id>', methods=['POST']) 
 @jwt_required()
@@ -50,7 +71,13 @@ def chat(conv_id):
     user_input = data.get("message")
     
     if not user_input:
-        return jsonify({"error": "Please provide a message."}), 400
+        return jsonify({"error": "Vui lòng nhập tin nhắn"}), 400
+    
+    conv = Conversation.query.get(conv_id)
+
+    if conv:
+        if conv.user_id != get_jwt_identity():
+            return jsonify({"error": "Bạn không có quyền ở tin nhắn này"}), 401
 
     # Lấy lịch sử hội thoại từ bảng messages
     history = Message.query.filter_by(conversation_id=conv_id).order_by(Message.timestamp).all()
@@ -87,6 +114,13 @@ def chat(conv_id):
         timestamp=datetime.now()
     )
     db.session.add(bot_message)
+
+    #Sửa ended_at của bảng convertions
+    conv = Conversation.query.get(conv_id)
+    if conv:
+        conv.ended_at = datetime.now()
+    else:
+        return jsonify({"error": "Conversation not found"}), 404
 
     # Lưu thay đổi vào cơ sở dữ liệu
     db.session.commit()
