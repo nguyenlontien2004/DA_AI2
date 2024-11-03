@@ -5,6 +5,7 @@ from .conversations.controller import conv_bp
 from flask_jwt_extended import JWTManager
 from .auth.controller import auth
 from .chatbot.controller import chat_bp
+from .chatgpt.controller import chatgpt_bp
 from .extension import db, ma, jwt
 from .model import User, Message, Conversation, Feedback
 import os
@@ -31,6 +32,7 @@ def create_app():
     app.register_blueprint(conv_bp, url_prefix="/api") 
     app.register_blueprint(auth, url_prefix="/api/auth")
     app.register_blueprint(chat_bp, url_prefix="/api")
+    app.register_blueprint(chatgpt_bp, url_prefix="/api")
     app.register_blueprint(message_bp, url_prefix="/api")
 
     return app
