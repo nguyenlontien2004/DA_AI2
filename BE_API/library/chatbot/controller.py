@@ -23,15 +23,6 @@ model = genai.GenerativeModel(
 # Khởi tạo Blueprint cho chatbot API
 chat_bp = Blueprint('chat', __name__)
 
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..extension import db
-from ..model import Conversation
-from datetime import datetime
-import google.generativeai as genai
-
-chat_bp = Blueprint("chat", __name__)
-
 @chat_bp.route('/chat/start', methods=['POST'])
 @jwt_required()
 def start_chat():
@@ -126,17 +117,3 @@ def chat(conv_id):
     db.session.commit()
 
     return jsonify({"response": response.text}), 200
-
-@chat_bp.route('/chat/end', methods=['POST'])
-def end_chat():
-    data = request.json
-    conversation_id = data.get("conversation_id")
-
-    # Cập nhật thời gian kết thúc cuộc trò chuyện
-    conversation = Conversation.query.get(conversation_id)
-    if conversation:
-        conversation.ended_at = datetime.now()
-        db.session.commit()
-        return jsonify({"message": "Conversation ended."}), 200
-    else:
-        return jsonify({"error": "Conversation not found."}), 404
