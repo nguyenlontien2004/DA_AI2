@@ -1,10 +1,24 @@
-
-import Header from '../../components/headers/Header'
-import { MessageList } from '../../components/main'
-import ChatForm from '../../components/main/ChatForm'
-import SidebarList from '../../components/sidebars/SidebarList'
+import { useEffect } from 'react';
+import Header from '../../components/headers/Header';
+import { MessageList } from '../../components/main';
+import ChatForm from '../../components/main/ChatForm';
+import SidebarList from '../../components/sidebars/SidebarList';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const HomePage = () => {
+
+  useEffect(() => {
+    const message = localStorage.getItem('login_message');
+    if (message) {
+      toast.success(message, {
+        onClose: () => {
+          localStorage.removeItem('login_message');
+        }
+      });
+    }
+  }, []);
+
   return (
     <div className='h-full bg-gray-900'>
       {/* Sidebar - left */}
@@ -30,8 +44,9 @@ const HomePage = () => {
           </div>
         </main>
       </div>
+      <ToastContainer />
     </div>
   )
 }
 
-export default HomePage
+export default HomePage;

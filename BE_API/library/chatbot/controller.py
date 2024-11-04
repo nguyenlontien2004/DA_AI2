@@ -6,6 +6,9 @@ import os
 import google.generativeai as genai
 from datetime import datetime
 
+# Cấu hình API Key cho Gemini
+genai.configure(api_key="AIzaSyBobJgCJ_i0b1O35PBYslKGGyUVCTipk_M")
+
 # Cấu hình model Gemini
 generation_config = {
     "temperature": 1,
