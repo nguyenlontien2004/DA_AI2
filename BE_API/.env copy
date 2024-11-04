@@ -1,0 +1,6 @@
+KEY = "library_api"
+DATABASE_URL = 'mysql+pymysql://root:@localhost/py_chatbot'
+JWT_SECRET_KEY= ""
+
+#có thể thay đổi key và tên database(py_chatbot)
+#nếu mysql có mật khẩu mysql+pymysql://root:<your_password>@localhost/py_chatbot

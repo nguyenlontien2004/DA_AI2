@@ -1,0 +1,11 @@
+Flask
+Werkzeug
+Flask-SQLAlchemy
+marshmallow-sqlalchemy
+PyMySQL
+python-dotenv
+Flask-Marshmallow
+marshmallow
+SQLAlchemy
+google-generativeai
+Flask-jwt-extended
