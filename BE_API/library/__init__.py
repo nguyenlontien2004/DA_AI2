@@ -1,4 +1,4 @@
-ffrom flask import Flask, request, Blueprint
+from flask import Flask, request, Blueprint
 from flask_cors import CORS
 from .users.controller import user
 from .messages.controller import message_bp
@@ -34,10 +34,10 @@ def create_app():
 
     app.register_blueprint(user)
 # app.register_blueprint(messages)
-app.register_blueprint(conv_bp, url_prefix="/api")
-app.register_blueprint(auth, url_prefix="/api/auth")
-app.register_blueprint(chat_bp, url_prefix="/api")
-app.register_blueprint(chatgpt_bp, url_prefix="/api")
-app.register_blueprint(message_bp, url_prefix="/api")
+    app.register_blueprint(conv_bp, url_prefix="/api")
+    app.register_blueprint(auth, url_prefix="/api/auth")
+    app.register_blueprint(chat_bp, url_prefix="/api")
+    app.register_blueprint(chatgpt_bp, url_prefix="/api")
+    app.register_blueprint(message_bp, url_prefix="/api")
 
-return app
+    return app
