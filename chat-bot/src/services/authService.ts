@@ -1,4 +1,5 @@
 import axios from 'axios';
+import useCallApi from './axiosService';
 
 const API_URL = "http://127.0.0.1:5000";
 
@@ -31,5 +32,14 @@ const signup = async (username: string, email: string, password: string) => {
         }
     }
 }
+const logout = async () => {
+    const callApi = useCallApi();
+    try {
+        await callApi('/auth/logout', 'POST');
+    } catch (error) {
+        console.error('Đăng xuất thất bại:', error);
+        throw new Error("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại sau.");
+    }
+}
 
-export { login, signup }
+export { login, signup, logout }
