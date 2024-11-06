@@ -12,8 +12,9 @@
 
 4. copy file ".env copy" tạo file .env
 
-5. truy cập https://ai.google.dev/ -> đăng nhập và tạo api key.
-    Pase api vào file .env
+5. truy cập https://ai.google.dev/ -> đăng nhập và tạo api key
+    Pase api vào phần GEMINI_API_KEY trong file .env
+    tương tự lấy api của openai pase vào phần GPT_API_KEY
 
 6. sử dụng xampp hoặc laragon mở mysql tạo db tên py_chatbot
 
