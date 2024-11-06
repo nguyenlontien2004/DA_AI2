@@ -28,10 +28,7 @@ def create_app():
     ma.init_app(app)
     jwt.init_app(app)
     create_db(app)
-
-    # Di chuyển CORS vào đây
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
-
+    CORS(app)
     app.register_blueprint(user)
 # app.register_blueprint(messages)
     app.register_blueprint(conv_bp, url_prefix="/api")
