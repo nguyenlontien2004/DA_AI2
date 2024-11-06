@@ -1,43 +1,46 @@
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import Button from '../buttons/Button'
-import { ListOfChats, ListOfNamespaces, ModelTemperature, SourceDocumentsToggle } from './components'
+import { ListOfChats, ListOfNamespaces } from './components'
+import { useNavigate } from 'react-router-dom';
 
 const SidebarList = () => {
+  const navigate = useNavigate()
   return (
     <nav className="flex flex-col h-full">
-    <div>
-      {/* {selectedNamespace && (
-        
-      )} */}
-      <div className="px-4 space-y-3 mb-4">
-          <SourceDocumentsToggle/>
-
-          <ModelTemperature />
-
+      <div>
+        {/* New chat  */}
+        <div className="px-6 space-y-3 mb-4">
           <Button
-            buttonType="primary"
             buttonText="New chat"
+            className=' py-3 text-[#4E8095] bg-white'
             icon={PlusCircleIcon}
           />
         </div>
-    </div>
+      </div>
 
-    <>
-      <div className="px-4 w-full space-y-2 mb-6">
-        <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
-          Your namespaces
+      <>
+       {/* Your namespaces  */}
+        <div className="px-6 w-full space-y-2 mb-6">
+          <div className="text-xs sm:text-sm lg:text-xl font-semibold leading-6 text-white">
+            Your namespaces
+          </div>
+          <ListOfNamespaces />
         </div>
-        <ListOfNamespaces/>
-      </div>
 
-      <div className="px-4 text-xs sm:text-sm font-semibold leading-6 text-blue-400">
-        Your chats
+    {/* Your chats  */}
+        <div className="px-6 text-xs sm:text-sm lg:text-xl font-semibold leading-6 text-white">
+          Your chats
+        </div>
+        <div className="px-6 overflow-y-auto h-[450px]">
+          <ListOfChats />
+        </div>
+      </>
+      <div className="px-6 mt-2">
+        <button onClick={()=> navigate('/signin')} className='inline-flex bg-white/[27%] text-white items-center gap-x-1 rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm w-full'>
+          <span className='text-[#3694FF]'>Sign in</span>to save your chat history
+        </button>
       </div>
-      <div className="px-4 flex-grow overflow-y-auto">
-          <ListOfChats/>
-      </div>
-    </>
-  </nav>
+    </nav>
   )
 }
 
