@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useRef } from 'react';
-import {
-  PaperAirplaneIcon,
-} from '@heroicons/react/24/solid';
-
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { useReload } from './ReloadContext';
 
 const ChatForm = () => {
+  const [message, setMessage] = useState('');
   const otherRef = useRef<HTMLTextAreaElement>(null);
+  const { triggerReload } = useReload();
+
   const adjustTextareaHeight = useCallback(() => {
     if (otherRef.current) {
       otherRef.current.style.height = 'auto';
@@ -20,13 +21,40 @@ const ChatForm = () => {
       otherRef.current.style.height = height > 250 ? '250px' : `${height}px`;
     }
   }, [otherRef]);
+
   useEffect(() => {
     adjustTextareaHeight();
-  }, []);
+  }, [message]);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczMDc4ODUyMSwianRpIjoiODQzYzliODItYzVlYS00YjU3LTg1OWYtNmNmMmRkZjM3ZmY5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzMwNzg4NTIxLCJjc3JmIjoiZDlmNjVmNWItNTcxZS00Njc4LWI3YmMtOTk4YmIzNmVlYTBmIiwiZXhwIjoxNzMwNzk1NzIxfQ.UUdj92_1uMCZ6mxq47ffQuUVznSLWumwJ8ImneCJSDo';
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/chat/message/1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message })
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Message posted:', data);
+      setMessage(''); // Clear the input field after successful submission
+      triggerReload(); // Trigger reload in MessageList
+    } catch (error) {
+      console.error('Error posting message:', error);
+    }
+  };
+
   return (
-    <form
-      className="items-center w-screen justify-center flex p-4 sm:px-4 sm:py-10"
-    >
+    <form onSubmit={handleSubmit} className="items-center w-screen justify-center flex p-4 sm:px-4 sm:py-10">
       <label htmlFor="userInput" className="sr-only">
         Your message
       </label>
@@ -40,6 +68,8 @@ const ChatForm = () => {
           id="userInput"
           name="userInput"
           placeholder={'Your message...'}
+          value={message}
+      onChange={(e) => setMessage(e.target.value)}
         />
       </div>
       <button
