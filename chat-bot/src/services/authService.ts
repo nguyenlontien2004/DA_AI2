@@ -1,5 +1,4 @@
 import axios from 'axios';
-import useCallApi from './axiosService';
 
 const API_URL = "http://127.0.0.1:5000";
 
@@ -7,9 +6,13 @@ interface LoginResponse {
     access_token: string;
 }
 
-const login = async (username: string, password: string): Promise<LoginResponse> => {
+const login = async (username_or_email: string, password: string): Promise<LoginResponse> => {
     try {
-        const response = await axios.post<LoginResponse>(`${API_URL}/api/auth/login`, { username, password });
+        const response = await axios.post<LoginResponse>(`${API_URL}/api/auth/login`, { username_or_email, password }, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
         return response.data;
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.error) {
@@ -22,7 +25,11 @@ const login = async (username: string, password: string): Promise<LoginResponse>
 
 const signup = async (username: string, email: string, password: string) => {
     try {
-        const response = await axios.post(`${API_URL}/api/auth/register`, { username, email, password });
+        const response = await axios.post(`${API_URL}/api/auth/register`, { username, email, password }, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
         return response.data.message;
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.error) {
@@ -32,14 +39,5 @@ const signup = async (username: string, email: string, password: string) => {
         }
     }
 }
-const logout = async () => {
-    const callApi = useCallApi();
-    try {
-        await callApi('/auth/logout', 'POST');
-    } catch (error) {
-        console.error('Đăng xuất thất bại:', error);
-        throw new Error("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại sau.");
-    }
-}
 
-export { login, signup, logout }
+export { login, signup }

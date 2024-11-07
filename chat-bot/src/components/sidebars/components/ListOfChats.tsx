@@ -1,68 +1,57 @@
-import React from 'react';
-import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom'; // Import useParams để lấy chatId từ URL
+import ChatItem from "./ChatItem";
+import useCallApi from '../../../services/axiosService';
 
+interface ListOfChatsProps {
+  selectedChatId: number | null;
+  setSelectedChatId: React.Dispatch<React.SetStateAction<number | null>>;
+}
 
+const ListOfChats = ({ selectedChatId, setSelectedChatId }: ListOfChatsProps) => {
+  const [chats, setChats] = useState([]);
+  const callApi = useCallApi<{ name: string; id: number }[]>();
+  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const { chatId } = useParams(); // Lấy chatId từ URL
+  
+  // Cập nhật selectedChatId từ chatId trong URL khi component được render
+  useEffect(() => {
+    if (chatId) {
+      setSelectedChatId(Number(chatId)); // Lưu chatId vào state khi URL thay đổi
+    }
+  }, [chatId, setSelectedChatId]);
 
+  // Lấy lại danh sách cuộc trò chuyện mỗi khi component được render
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const data = await callApi('/conversations');
+        setChats(data);
+      } catch (error) {
+        // console.error('Error fetching data:', error); // Removed console statement
+      }
+    };
 
-const ListOfChats = () => {
+    fetchChats();
+  }, [callApi]); // Chỉ gọi lại khi API hoặc các tham số thay đổi
 
+  const handleChatClick = (chatId: number) => {
+    setSelectedChatId(chatId); // Lưu chatId vào state
+
+    // Thay đổi URL khi người dùng chọn một cuộc trò chuyện
+    navigate(`/chat/${chatId}`); // Đường dẫn sẽ thay đổi thành /chat/{chatId}
+  };
 
   return (
     <ul role="list" className="-mx-2 mt-2 px-2 pb-6 space-y-1">
-       <li
-          className={'text-gray-400 hover:text-white hover:bg-gray-800 group flex w-full gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer'}
-        >
-            chat 1
-            <div className="ml-auto">
-              <button
-                className="text-gray-300 hover:text-gray-400 ml-2"
-              >
-                <PencilIcon className="h-4 w-4" />
-              </button>
-
-              <button
-                className="text-red-500 hover:text-red-600 ml-2"
-              >
-                <TrashIcon className="h-4 w-4" />
-              </button>
-            </div>
-        </li>
-        <li
-          className={'text-gray-400 hover:text-white hover:bg-gray-800 group flex w-full gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer'}
-        >
-            chat 2
-            <div className="ml-auto">
-              <button
-                className="text-gray-300 hover:text-gray-400 ml-2"
-              >
-                <PencilIcon className="h-4 w-4" />
-              </button>
-
-              <button
-                className="text-red-500 hover:text-red-600 ml-2"
-              >
-                <TrashIcon className="h-4 w-4" />
-              </button>
-            </div>
-        </li>
-        <li
-          className={'text-gray-400 hover:text-white hover:bg-gray-800 group flex w-full gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer'}
-        >
-            chat 3
-            <div className="ml-auto">
-              <button
-                className="text-gray-300 hover:text-gray-400 ml-2"
-              >
-                <PencilIcon className="h-4 w-4" />
-              </button>
-
-              <button
-                className="text-red-500 hover:text-red-600 ml-2"
-              >
-                <TrashIcon className="h-4 w-4" />
-              </button>
-            </div>
-        </li>
+      {chats?.map((chat) => (
+        <ChatItem
+          key={chat.id}
+          chat={chat}
+          onChatClick={handleChatClick}
+          isSelected={selectedChatId !== null && chat.id === selectedChatId}
+        />
+      ))}
     </ul>
   );
 };
