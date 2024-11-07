@@ -1,11 +1,12 @@
 from openai import OpenAI
 import os
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Blueprint, request, jsonify
-from ..extension import db
+from ..extension import db, socketio
 from ..model import User, Conversation, Message
+from flask_socketio import emit, join_room
 
 # Load API key từ file .env
 load_dotenv()
@@ -83,10 +84,40 @@ def chat(conv_id):
         # Lưu thay đổi vào cơ sở dữ liệu
         db.session.commit()
 
+        # Phát tin nhắn mới tới phòng WebSocket của cuộc hội thoại
+        # print(f"Emitting user message to room conversation_{conv_id} with content: {user_message.message}")
+        socketio.emit('new_message', {
+            "message_id": user_message.id,
+            "message": user_message.message,
+            "sender": user_message.sender,
+            "timestamp": user_message.timestamp.isoformat()
+        }, room=f"conversation_{conv_id}")
+        
+        # print(f"Emitting bot message to room conversation_{conv_id} with content: {bot_message.message}")
+        socketio.emit('new_message', {
+            "message_id": bot_message.id,
+            "message": bot_message.message,
+            "sender": bot_message.sender,
+            "timestamp": bot_message.timestamp.isoformat()
+        }, room=f"conversation_{conv_id}")
+
         return jsonify({"response": response_content}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@socketio.on("join")
+# @jwt_required()
+def on_join(data):
+    room = data.get("room")
+    if room:
+        join_room(room)
+        emit("status", {"msg": f"Joined room {room}"}, room=room)
+
+# Phát thử nghiệm
+@socketio.on("test_message")
+def test_message():
+    emit("new_message", {"message": "Test message from server"}, broadcast=True)
     
 #________________
 # def generate_openai_response():
