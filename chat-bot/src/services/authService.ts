@@ -6,9 +6,13 @@ interface LoginResponse {
     access_token: string;
 }
 
-const login = async (username: string, password: string): Promise<LoginResponse> => {
+const login = async (username_or_email: string, password: string): Promise<LoginResponse> => {
     try {
-        const response = await axios.post<LoginResponse>(`${API_URL}/api/auth/login`, { username, password });
+        const response = await axios.post<LoginResponse>(`${API_URL}/api/auth/login`, { username_or_email, password }, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
         return response.data;
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.error) {
@@ -21,7 +25,11 @@ const login = async (username: string, password: string): Promise<LoginResponse>
 
 const signup = async (username: string, email: string, password: string) => {
     try {
-        const response = await axios.post(`${API_URL}/api/auth/register`, { username, email, password });
+        const response = await axios.post(`${API_URL}/api/auth/register`, { username, email, password }, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
         return response.data.message;
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.error) {

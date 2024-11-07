@@ -1,8 +1,7 @@
-import React, { Fragment } from 'react';
+import  { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-// import { LoadingDots } from '@/components/other';
-// import { classNames } from '@/utils/classNames';
+
 
 
 
@@ -11,8 +10,8 @@ const ListOfNamespaces = () => {
   return (
     <Menu as="div" className="w-full relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-700 hover:bg-gray-700">
-                  selectedNamespace
+        <Menu.Button className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-white/[27%] px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-700 hover:bg-gray-700">
+                  Namespace
                   <ChevronDownIcon
                     className="-mr-1 h-5 w-5 text-gray-400"
                     aria-hidden="true"

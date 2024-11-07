@@ -6,6 +6,7 @@ interface ButtonProps {
   onClick?: () => void;
   buttonText: string;
   icon?: any;
+  className?:string
 }
 
 const Button = ({
@@ -13,9 +14,10 @@ const Button = ({
   onClick,
   buttonText,
   icon: Icon,
+  className,
 }: ButtonProps): ReactElement => {
   let buttonClassName =
-    'inline-flex items-center gap-x-2 rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm w-full';
+    `inline-flex items-center gap-x-2 rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm w-full ${className}`;
 
   if (buttonType === 'primary') {
     buttonClassName +=
