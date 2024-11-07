@@ -1,6 +1,8 @@
 KEY = "library_api"
 DATABASE_URL = 'mysql+pymysql://root:@localhost/py_chatbot'
 JWT_SECRET_KEY= ""
+GEMINI_API_KEY="Thay_bằng_api_key của gemini"
+GPT_API_KEY = "api_key của openai"
 
 #có thể thay đổi key và tên database(py_chatbot)
 #nếu mysql có mật khẩu mysql+pymysql://root:<your_password>@localhost/py_chatbot

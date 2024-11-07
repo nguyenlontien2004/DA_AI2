@@ -18,6 +18,7 @@ class User(db.Model):
 class Conversation(db.Model):
     __tablename__ = 'conversations'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255),  nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     started_at = db.Column(db.DateTime, default=db.func.now())
     ended_at = db.Column(db.TIMESTAMP, nullable=True)
@@ -25,8 +26,9 @@ class Conversation(db.Model):
     # Mỗi quan hệ với User
     user = db.relationship('User', backref=db.backref('conversations', lazy=True))
 
-    def __init__(self, user_id, started_at, ended_at=None):
+    def __init__(self, name, user_id, started_at, ended_at=None):
         self.user_id = user_id
+        self.name = name
         if started_at:
             self.started_at = started_at
         self.ended_at = ended_at

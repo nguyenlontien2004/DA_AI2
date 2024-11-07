@@ -7,7 +7,7 @@ class UserSchema(ma.Schema):
 
 class ConversationSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'user_id', 'started_at', 'ended_at')
+        fields = ('id', 'name', 'user_id', 'started_at', 'ended_at')
 
 
 class MessageSchema(ma.Schema):

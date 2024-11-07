@@ -33,7 +33,7 @@ const ListOfChats = ({ selectedChatId, setSelectedChatId }: ListOfChatsProps) =>
     };
 
     fetchChats();
-  }, [callApi]); // Chỉ gọi lại khi API hoặc các tham số thay đổi
+  }, []); // Chỉ gọi lại khi API hoặc các tham số thay đổi
 
   const handleChatClick = (chatId: number) => {
     setSelectedChatId(chatId); // Lưu chatId vào state

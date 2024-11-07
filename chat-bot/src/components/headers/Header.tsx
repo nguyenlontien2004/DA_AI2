@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Header = () => {
   const navigate = useNavigate();
   return (
-    <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-800 bg-gray-900 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 justify-between">
+    <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-white bg-[#0A033A] px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 justify-between">
       <button
         type="button"
         className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
@@ -16,7 +16,7 @@ const Header = () => {
 
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 items-center">
         <span className="flex-1 text-center items-center flex-shrink-0 rounded-md  px-2 py-1 text-xs sm:text-sm md:text-md md:text-lg font-medium text-blue-400">
-          DOC CHATBOT
+         CHATBOT Al
         </span>
       </div>
 
@@ -30,14 +30,6 @@ const Header = () => {
             aria-hidden="true"
           />
           <span>Settings</span>
-        </button>
-      </div>
-      <div className="flex-shrink-0" onClick={() => navigate('/signin')}>
-        <button
-          type="button"
-          className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          <span>Login</span>
         </button>
       </div>
     </div>

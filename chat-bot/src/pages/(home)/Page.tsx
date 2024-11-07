@@ -6,7 +6,6 @@ import SidebarList from '../../components/sidebars/SidebarList'
 import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import { Message } from '../../types/message'
 import { Message } from '../../types/message'
 import useCallApi from '../../services/axiosService'
 import { useParams } from 'react-router-dom'
