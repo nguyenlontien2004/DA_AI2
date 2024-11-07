@@ -3,6 +3,9 @@ import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { useParams, useNavigate } from 'react-router-dom';
 import useCallApi from '../../services/axiosService';
 import { Message } from '../../types/message';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { useForm } from 'react-hook-form';
 
 type ChatFormProps = {
   divRef: React.RefObject<HTMLDivElement>;
@@ -12,6 +15,7 @@ type ChatFormProps = {
 
 const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
   const [query, setQuery] = useState<string>('');
+  const [loading,setLoading] = useState<boolean>(false);
   const otherRef = useRef<HTMLTextAreaElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const callApi = useCallApi<any>();
@@ -43,7 +47,7 @@ const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
   // Hàm gửi tin nhắn
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+  setLoading(true)
     if (query.trim()) {
       try {
         if (chatId) {
@@ -51,7 +55,7 @@ const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
           const newUserMesasge = {
             message:query,
             sender:"user",
-            message_id: `${now.getMilliseconds()}-${now.getSeconds()}-${now.getHours()}`
+            message_id: `${now.getMilliseconds()}-${now.getSeconds()}-${now.getHours()}-${Math.random()}`
           }
           setMessage([...messages,newUserMesasge])
           // Gửi tin nhắn vào cuộc trò chuyện có chatId
@@ -60,7 +64,7 @@ const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
          const newModelMesasge = {
           message:data?.response,
           sender:"model",
-          message_id: `${now.getMilliseconds()}-${now.getSeconds()}-${now.getHours()}`
+          message_id: `${now.getMilliseconds()}-${now.getSeconds()}-${now.getHours()}-${Math.random()}`
         }
         setMessage([...messages,newUserMesasge,newModelMesasge])
         } else {
@@ -78,11 +82,12 @@ const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
         // console.error(error);
       }
     }
+    setLoading(false)
   };
 
   // Hàm xử lý sự kiện nhấn Enter
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey && !loading) {
       event.preventDefault();
       handleSubmit(event as any);
     }
@@ -117,9 +122,10 @@ const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
           />
           <button
             type="submit"
+            disabled={!loading}
             className="inline-flex justify-center p-2 rounded-full cursor-pointer text-blue-500 hover:text-blue-300"
           >
-            <PaperAirplaneIcon className="h-6 w-6" />
+            {loading? (<><Spin indicator={<LoadingOutlined style={{fontSize:20, color:'blue'}}  spin />} /></>):(<><PaperAirplaneIcon className="h-6 w-6" /></>)}
           </button>
         </div>
       </div>

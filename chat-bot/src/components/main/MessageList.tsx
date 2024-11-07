@@ -1,6 +1,8 @@
 import MessageItem from './MessageItem';
 
 import { Message } from '../../types/message';
+import { useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 
 
 
@@ -10,24 +12,28 @@ type MessageListProps = {
 };
 
 const MessageList = ({ messageListRef,messages }: MessageListProps) => {
-
-
-
-  // if (!chatId) {
-  //   return (
-  //     <div className="flex justify-center items-center h-full">
-  //       <div className="text-center text-gray-500 font-semibold text-lg">
-  //         Chưa có cuộc trò chuyện nào được chọn.
-  //       </div>
-  //     </div>
-  //   );
-  // }
+    const notChatRef = useRef<HTMLDivElement>(null)
+    const {chatId} = useParams()
+    useEffect(()=>{
+        console.log("ChatId", chatId)
+        console.log("notChatRef", notChatRef)
+        console.log("messages", messages)
+       if(!chatId){
+        if(notChatRef?.current){
+            notChatRef.current.scrollTo({
+                top: notChatRef.current.scrollHeight,
+                behavior: 'smooth',
+              });
+        }
+       }
+        
+    },[notChatRef,chatId])
 
   return (
     <div className='overflow-y-auto'>
-      <div className='flex flex-col px-4 pt-5'>
+      <div className='flex flex-col px-4 pt-5 min-h-[520px]'>
         {messages.length === 0 ? (
-          <div className="text-center text-gray-500">Không có tin nhắn nào trong cuộc trò chuyện này.</div>
+          <div ref={notChatRef} className="py-5 text-center text-gray-500 ">Không có tin nhắn nào trong cuộc trò chuyện này.</div>
         ) : (
           messages?.map((message) => (
             <MessageItem

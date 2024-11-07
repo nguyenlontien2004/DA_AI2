@@ -36,7 +36,6 @@ const HomePage = () => {
     } else {
       setMessages([]); // Nếu không có chatId, xóa danh sách tin nhắn
     }
-
     // // Lắng nghe sự thay đổi của chatId trong URL
     // const handleStorageChange = () => {
     //   if (chatId) {
@@ -48,7 +47,7 @@ const HomePage = () => {
     return () => {
       // Hủy bỏ event listener nếu có
     };
-  }, [callApi, chatId]); // Chạy lại khi chatId thay đổi
+  }, [chatId]); // Chạy lại khi chatId thay đổi
   useEffect(() => {
     const message = localStorage.getItem('login_message');
     if (message) {
@@ -73,7 +72,7 @@ const HomePage = () => {
       {/* Main - right  */}
       <div className="lg:pl-72 h-screen">
         <Header />
-        <main className="flex flex-col bg-gray-900">
+        <main className="flex flex-col bg-gray-900 ">
           <div ref={divRef} className="flex-grow pb-36">
             <div className="h-full">
               <MessageList messageListRef={messageListRef} messages={messages}/>
