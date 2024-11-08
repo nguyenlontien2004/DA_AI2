@@ -122,7 +122,7 @@ const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
           />
           <button
             type="submit"
-            disabled={!loading}
+            disabled={loading}
             className="inline-flex justify-center p-2 rounded-full cursor-pointer text-blue-500 hover:text-blue-300"
           >
             {loading? (<><Spin indicator={<LoadingOutlined style={{fontSize:20, color:'blue'}}  spin />} /></>):(<><PaperAirplaneIcon className="h-6 w-6" /></>)}
