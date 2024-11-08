@@ -25,7 +25,7 @@ const ListOfChats = ({ selectedChatId, setSelectedChatId }: ListOfChatsProps) =>
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const data = await callApi('/conversations');
+        const data:any = await callApi('/conversations');
         setChats(data);
       } catch (error) {
         // console.error('Error fetching data:', error); // Removed console statement

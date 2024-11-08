@@ -16,10 +16,9 @@ const SidebarList = () => {
     try {
       await callApi('/auth/logout', 'POST');
       localStorage.clear();
-      localStorage.setItem('logout_message', 'Đăng xuất thành công!');
+      toast.success('Đăng xuất thành công!');
       navigate('/signin');
     } catch (error) {
-      console.error('Đăng xuất thất bại:', error);
       toast.error('Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại sau.');
     }
   };
