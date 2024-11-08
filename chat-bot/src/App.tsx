@@ -4,6 +4,7 @@ import HomePage from './pages/(home)/Page'
 import SettingPage from './pages/(settings)/Page'
 import SignupPage from './pages/(auth)/signup/Page'
 import SigninPage from './pages/(auth)/signin/Page'
+import ForgotPasswordPage from './pages/(auth)/forgot/Page'
 
 
 function App() {
@@ -15,6 +16,8 @@ function App() {
       <Route path='setting' element={<SettingPage />} />
       <Route path='signup' element={<SignupPage />} />
       <Route path='signin' element={<SigninPage />} />
+      <Route path='forgot-password' element={<ForgotPasswordPage />} />
+      <Route path='chat/:chatId' element={<HomePage />} />
     </Routes>
   )
 }

@@ -47,7 +47,7 @@ const SignupPage = () => {
               />
             </div>
 
-            {/* Email Field */}
+            {/* Email Field - Đã sửa thành Username */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-100">
                 Email
@@ -80,28 +80,25 @@ const SignupPage = () => {
                 required
               />
             </div>
-
-            {/* Sign Up Button */}
+        
+            {/* Sign In Button */}
             <div>
               <button
                 type="submit"
-                className="w-full bg-indigo-500 text-white p-2 rounded-lg font-medium hover:bg-indigo-600 transition"
+                className="w-full mt-3 bg-[#4834D4] text-white p-2 rounded-lg font-medium hover:bg-indigo-600 transition"
               >
-                Sign Up
+                Đăng ký
               </button>
             </div>
           </form>
 
-          {/* Back to Login Link */}
-          <p className="text-sm text-gray-200 mt-4 text-center">
-            Already have an account?{' '}
-            <Link to="/signin" className="text-indigo-500 hover:text-indigo-700">
-              Login here
-            </Link>
-          </p>
+          {/* Forgot Password and Sign Up Links */}
+          <div className="flex items-center justify-center mt-4 text-base">
+            <i className="text-white"> Đã có tài khoản? <Link to={'/signin'} className=" text-[#4834D4] hover:text-blue-500">Đăng nhập</Link></i>
+          </div>
+          <ToastContainer />
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 }

@@ -10,3 +10,4 @@ SQLAlchemy
 google-generativeai
 Flask-jwt-extended
 openai
+flask-cors
