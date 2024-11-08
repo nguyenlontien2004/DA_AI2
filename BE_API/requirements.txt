@@ -11,3 +11,5 @@ google-generativeai
 Flask-jwt-extended
 openai
 flask-cors
+flask-socketio
+eventlet
