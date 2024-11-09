@@ -1,5 +1,5 @@
-from library import create_app
+from library import create_app, socketio
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True)
+    socketio.run(app, debug=True)

@@ -15,9 +15,6 @@ const MessageList = ({ messageListRef,messages }: MessageListProps) => {
     const notChatRef = useRef<HTMLDivElement>(null)
     const {chatId} = useParams()
     useEffect(()=>{
-        console.log("ChatId", chatId)
-        console.log("notChatRef", notChatRef)
-        console.log("messages", messages)
        if(!chatId){
         if(notChatRef?.current){
             notChatRef.current.scrollTo({

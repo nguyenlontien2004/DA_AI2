@@ -1,16 +1,14 @@
-from flask import Flask, request, Blueprint
+from flask import Flask
 from flask_cors import CORS
 from .users.controller import user
 from .messages.controller import message_bp
 from .conversations.controller import conv_bp
-from flask_jwt_extended import JWTManager
 from .auth.controller import auth
 from .chatbot.controller import chat_bp
 from .chatgpt.controller import chatgpt_bp
-from .extension import db, ma, jwt
+from .extension import db, ma, jwt, socketio
 import os
 import google.generativeai as genai
-
 
 def create_db(app):
     if not os.path.exists("library/py_chatbot.db"):
@@ -27,10 +25,10 @@ def create_app():
     db.init_app(app)
     ma.init_app(app)
     jwt.init_app(app)
+    socketio.init_app(app, cors_allowed_origins="*")
     create_db(app)
     CORS(app)
     app.register_blueprint(user)
-# app.register_blueprint(messages)
     app.register_blueprint(conv_bp, url_prefix="/api")
     app.register_blueprint(auth, url_prefix="/api/auth")
     app.register_blueprint(chat_bp, url_prefix="/api")

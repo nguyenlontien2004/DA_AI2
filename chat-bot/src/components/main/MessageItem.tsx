@@ -45,7 +45,7 @@ const MessageItem = ({
                {messageType == 'al' && ( <img src={chatAl} alt="chatAl" className=' object-cover w-full h-full' />)}
                {messageType == 'user' && ( <div className=' flex justify-center items-center px-5 py-2 bg-[#4834D4] rounded-full font-semibold text-white'>you</div>)}
             </div>
-            <div ref={textRef} className='max-w-2xl p-3 flex justify-center items-center bg-[#E2E1E5]'>
+            <div ref={textRef} className='max-w-2xl p-3 flex justify-center items-center bg-[#E2E1E5] '>
                 <p >
                 {messageText}
                 </p>

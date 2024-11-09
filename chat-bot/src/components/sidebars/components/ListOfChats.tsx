@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // Import useParams để lấy chatId từ URL
-import ChatItem from "./ChatItem";
+import { useNavigate, useParams } from 'react-router-dom';
+import ChatItem from './ChatItem';
 import useCallApi from '../../../services/axiosService';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface ListOfChatsProps {
   selectedChatId: number | null;
@@ -9,15 +11,15 @@ interface ListOfChatsProps {
 }
 
 const ListOfChats = ({ selectedChatId, setSelectedChatId }: ListOfChatsProps) => {
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState<{ name: string; id: number }[]>([]);
   const callApi = useCallApi<{ name: string; id: number }[]>();
-  const navigate = useNavigate(); // Khởi tạo useNavigate
-  const { chatId } = useParams(); // Lấy chatId từ URL
-  
+  const navigate = useNavigate();
+  const { chatId } = useParams();
+
   // Cập nhật selectedChatId từ chatId trong URL khi component được render
   useEffect(() => {
     if (chatId) {
-      setSelectedChatId(Number(chatId)); // Lưu chatId vào state khi URL thay đổi
+      setSelectedChatId(Number(chatId));
     }
   }, [chatId, setSelectedChatId]);
 
@@ -25,22 +27,94 @@ const ListOfChats = ({ selectedChatId, setSelectedChatId }: ListOfChatsProps) =>
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const data:any = await callApi('/conversations');
+        const data: any = await callApi('/conversations');
         setChats(data);
       } catch (error) {
-        // console.error('Error fetching data:', error); // Removed console statement
+        // Xử lý lỗi nếu cần
       }
     };
 
     fetchChats();
-  }, []); // Chỉ gọi lại khi API hoặc các tham số thay đổi
+  }, []);
+
+  const handleUpdateChat = async (chatId: number, newName: string) => {
+    try {
+      await callApi(`/conversation/${chatId}`, 'PUT', { name: newName });
+  
+      // Cập nhật danh sách cuộc trò chuyện
+      setChats((prevChats) =>
+        prevChats.map((chat) =>
+          chat.id === chatId ? { ...chat, name: newName } : chat
+        )
+      );
+      // toast.success('Tên cuộc trò chuyện đã được cập nhật!');
+    } catch (error) {
+      // toast.error('Có lỗi xảy ra khi cập nhật tên cuộc trò chuyện.');
+    }
+  };
 
   const handleChatClick = (chatId: number) => {
-    setSelectedChatId(chatId); // Lưu chatId vào state
-
-    // Thay đổi URL khi người dùng chọn một cuộc trò chuyện
-    navigate(`/chat/${chatId}`); // Đường dẫn sẽ thay đổi thành /chat/{chatId}
+    setSelectedChatId(chatId);
+    navigate(`/chat/${chatId}`);
   };
+
+  const handleDeleteChat = async (chatId: number) => {
+    toast(
+      ({ closeToast }) => (
+        <div style={{ padding: '16px', backgroundColor: '#f0f0f0', borderRadius: '8px', fontSize: '14px', color: '#333' }}>
+          <p>Bạn có chắc chắn muốn xóa cuộc trò chuyện này không?</p>
+          <div>
+            <button
+              onClick={async () => {
+                try {
+                  await callApi(`/conversation/${chatId}`, 'DELETE');
+                  setChats((prevChats) => prevChats.filter((chat) => chat.id !== chatId));
+  
+                  if (selectedChatId === chatId) {
+                    setSelectedChatId(null);
+                    navigate('/');
+                  }
+  
+                  toast.success('Cuộc trò chuyện đã được xóa thành công!');
+                } catch (error) {
+                  toast.error('Có lỗi xảy ra khi xóa cuộc trò chuyện.');
+                }
+                closeToast();
+              }}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: 'red',
+                color: 'white',
+                borderRadius: '4px',
+                border: 'none',
+                cursor: 'pointer',
+                marginRight: '8px',
+                transition: 'background-color 0.3s',
+              }}
+            >
+              Xác nhận
+            </button>
+            <button
+              onClick={closeToast}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: 'gray',
+                color: 'white',
+                borderRadius: '4px',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s',
+              }}
+            >
+              Hủy
+            </button>
+          </div>
+        </div>
+      ),
+      { position: 'top-center', autoClose: false }
+    );
+  };
+
 
   return (
     <ul role="list" className="-mx-2 mt-2 px-2 pb-6 space-y-1">
@@ -49,6 +123,8 @@ const ListOfChats = ({ selectedChatId, setSelectedChatId }: ListOfChatsProps) =>
           key={chat.id}
           chat={chat}
           onChatClick={handleChatClick}
+          onDelete={handleDeleteChat}
+          onUpdate={handleUpdateChat}
           isSelected={selectedChatId !== null && chat.id === selectedChatId}
         />
       ))}
