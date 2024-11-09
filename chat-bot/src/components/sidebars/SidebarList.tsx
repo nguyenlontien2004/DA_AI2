@@ -10,7 +10,7 @@ const SidebarList = () => {
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('access_token');
   const callApi = useCallApi();
-  const [selectedChatId, setSelectedChatId] = useState<number | null>(null); // Thêm state để lưu selectedChatId
+  const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
 
   const handleLogout = async () => {
     try {

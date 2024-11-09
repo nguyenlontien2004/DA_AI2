@@ -9,13 +9,13 @@ import { useForm } from 'react-hook-form';
 
 type ChatFormProps = {
   divRef: React.RefObject<HTMLDivElement>;
-  messages:Message[],
-  setMessage:any
+  messages: Message[],
+  setMessage: any
 }
 
-const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
+const ChatForm = ({ divRef, messages, setMessage }: ChatFormProps) => {
   const [query, setQuery] = useState<string>('');
-  const [loading,setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const otherRef = useRef<HTMLTextAreaElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const callApi = useCallApi<any>();
@@ -44,45 +44,45 @@ const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
     }
   }, [otherRef, wrapperRef, divRef]);
 
-  // Hàm gửi tin nhắn
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  setLoading(true)
+    setLoading(true);
     if (query.trim()) {
       try {
         if (chatId) {
-          const now = new Date()
-          const newUserMesasge = {
-            message:query,
-            sender:"user",
-            message_id: `${now.getMilliseconds()}-${now.getSeconds()}-${now.getHours()}-${Math.random()}`
-          }
-          setMessage([...messages,newUserMesasge])
-          // Gửi tin nhắn vào cuộc trò chuyện có chatId
-         const data = await callApi(`/chat/message/${chatId}`, 'POST', { message: query });
-         
-         const newModelMesasge = {
-          message:data?.response,
-          sender:"model",
-          message_id: `${now.getMilliseconds()}-${now.getSeconds()}-${now.getHours()}-${Math.random()}`
-        }
-        setMessage([...messages,newUserMesasge,newModelMesasge])
+          await sendMessage(chatId);
         } else {
-          // Nếu không có chatId, bắt đầu cuộc trò chuyện mới
           const data = await callApi(`/chat/start`, 'POST', { message: query });
-  
-          // Sau khi tạo cuộc trò chuyện mới thành công, điều hướng đến chatId mới
           if (data && data.conversation_id) {
-            await callApi(`/chat/message/${data.conversation_id}`, 'POST', { message: query });
-            navigate(`/chat/${data.conversation_id}`);
+            const newChatId = data.conversation_id;
+            navigate(`/chat/${newChatId}`, { replace: true });
+            await sendMessage(newChatId);
           }
         }
-        setQuery(''); 
       } catch (error) {
-        // console.error(error);
+        // Xử lý lỗi nếu có
       }
     }
-    setLoading(false)
+    setLoading(false);
+  };
+
+  const sendMessage = async (id: string) => {
+    const now = new Date();
+    const newUserMessage = {
+      message: query,
+      sender: 'user',
+      message_id: `${now.getMilliseconds()}-${now.getSeconds()}-${now.getHours()}-${Math.random()}`,
+    };
+    setMessage([...messages, newUserMessage]);
+
+    const data = await callApi(`/chat/message/${id}`, 'POST', { message: query });
+    const newModelMessage = {
+      message: data?.response,
+      sender: 'model',
+      message_id: `${now.getMilliseconds()}-${now.getSeconds()}-${now.getHours()}-${Math.random()}`,
+    };
+    setMessage([...messages, newUserMessage, newModelMessage]);
+    setQuery('');
   };
 
   // Hàm xử lý sự kiện nhấn Enter
@@ -119,13 +119,14 @@ const ChatForm = ({ divRef,messages,setMessage }: ChatFormProps) => {
             value={query}  // Đảm bảo giá trị của query được gán vào textarea
             onChange={(e) => setQuery(e.target.value)}  // Cập nhật query khi người dùng gõ
             onKeyDown={handleKeyDown}  // Gọi handleKeyDown khi nhấn phím
+            disabled={loading}
           />
           <button
             type="submit"
             disabled={loading}
             className="inline-flex justify-center p-2 rounded-full cursor-pointer text-blue-500 hover:text-blue-300"
           >
-            {loading? (<><Spin indicator={<LoadingOutlined style={{fontSize:20, color:'blue'}}  spin />} /></>):(<><PaperAirplaneIcon className="h-6 w-6" /></>)}
+            {loading ? (<><Spin indicator={<LoadingOutlined style={{ fontSize: 20, color: 'blue' }} spin />} /></>) : (<><PaperAirplaneIcon className="h-6 w-6" /></>)}
           </button>
         </div>
       </div>
