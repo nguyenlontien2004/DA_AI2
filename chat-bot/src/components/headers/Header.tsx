@@ -1,9 +1,8 @@
-import { Bars3Icon, Cog6ToothIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from 'react-router-dom';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 
 
 const Header = () => {
-  const navigate = useNavigate();
+ 
   return (
     <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-white bg-[#0A033A] px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 justify-between">
       <button
@@ -20,7 +19,7 @@ const Header = () => {
         </span>
       </div>
 
-      <div className="flex-shrink-0" onClick={() => navigate('/setting')}>
+      {/* <div className="flex-shrink-0" onClick={() => navigate('/setting')}>
         <button
           type="button"
           className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -31,7 +30,7 @@ const Header = () => {
           />
           <span>Settings</span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

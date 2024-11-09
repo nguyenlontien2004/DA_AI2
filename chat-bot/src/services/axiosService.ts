@@ -14,7 +14,7 @@ export default function useCallApi<T>() {
         const token = localStorage.getItem('access_token');
 
         if (!token) {
-            navigate('/signin');
+            // navigate('/signin');
             throw new Error('No access token found, redirecting to sign-in');
         }
 
