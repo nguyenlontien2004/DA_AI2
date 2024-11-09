@@ -27,7 +27,7 @@ const ListOfChats = ({ selectedChatId, setSelectedChatId }: ListOfChatsProps) =>
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const data: any = await callApi('/conversations');
+        const data:any = await callApi('/conversations');
         setChats(data);
       } catch (error) {
         // Xử lý lỗi nếu cần
