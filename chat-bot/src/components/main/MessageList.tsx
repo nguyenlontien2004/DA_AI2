@@ -3,7 +3,7 @@ import MessageItem from './MessageItem';
 import { Message } from '../../types/message';
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-
+import chatAl from '../../../public/images/image 4.png'
 
 
 type MessageListProps = {
@@ -30,9 +30,15 @@ const MessageList = ({ messageListRef,messages }: MessageListProps) => {
     <div className='overflow-y-auto'>
       <div className='flex flex-col px-4 pt-5 min-h-[520px]'>
         {messages.length === 0 ? (
-          <div ref={notChatRef} className="py-5 text-center text-gray-500 ">Không có tin nhắn nào trong cuộc trò chuyện này.</div>
+          <div ref={notChatRef} className="pt-5 max-w-3xl mx-auto w-full flex flex-col items-center">
+            <div className='size-16 mb-4'>
+              <img src={chatAl} alt="Al" className='w-full h-full object-cover' />
+            </div>
+            <h1 className='text-white font-bold text-3xl mb-4'>Xin chào, tôi là Al hỏi đáp Tiếng Việt</h1>
+            <h5 className='text-white text-base'>Tôi được tạo ra nhằm mục đích hỗ trợ các câu hỏi và kiến thức liên quan đến tiếng việt</h5>
+          </div>
         ) : (
-          messages?.map((message) => (
+          messages?.map((message:Message) => (
             <MessageItem
               messageListRef={messageListRef}
               messageType={message.sender === 'model' ? 'al' : 'user'}

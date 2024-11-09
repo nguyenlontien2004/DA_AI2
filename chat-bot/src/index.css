@@ -57,7 +57,7 @@ input[type="number"] {
     all: revert;
   }
   .text-truncate {
-    width: 100px;           /* Độ rộng tối đa cho phần văn bản */
+    width: 150px;           /* Độ rộng tối đa cho phần văn bản */
     white-space: nowrap;    /* Không xuống dòng */
     overflow: hidden;       /* Ẩn phần dư */
     text-overflow: ellipsis; /* Thêm dấu ba chấm */

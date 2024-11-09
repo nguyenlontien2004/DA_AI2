@@ -3,7 +3,7 @@ import chatAl from '../../../public/images/image 4.png'
 
 type MessageItemProps = {
     messageType: 'al'|'user',
-    messageText:string,
+    messageText:string|undefined,
     messageListRef: React.RefObject<HTMLDivElement>;
 }
 const MessageItem = ({

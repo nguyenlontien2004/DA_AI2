@@ -3,4 +3,6 @@ export interface Message {
   type: string;
   text: string;
   sender: string;
+  message?:string,
+  message_id:string|number
 }

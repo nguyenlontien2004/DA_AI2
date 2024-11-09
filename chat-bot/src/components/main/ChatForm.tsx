@@ -5,7 +5,7 @@ import useCallApi from '../../services/axiosService';
 import { Message } from '../../types/message';
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-import { useForm } from 'react-hook-form';
+
 
 type ChatFormProps = {
   divRef: React.RefObject<HTMLDivElement>;
@@ -52,7 +52,7 @@ const ChatForm = ({ divRef, messages, setMessage }: ChatFormProps) => {
         if (chatId) {
           await sendMessage(chatId);
         } else {
-          const data = await callApi(`/chat/start`, 'POST', { message: query });
+          const data:any = await callApi(`/chat/start`, 'POST', { message: query });
           if (data && data.conversation_id) {
             const newChatId = data.conversation_id;
             navigate(`/chat/${newChatId}`, { replace: true });
@@ -75,7 +75,7 @@ const ChatForm = ({ divRef, messages, setMessage }: ChatFormProps) => {
     };
     setMessage([...messages, newUserMessage]);
 
-    const data = await callApi(`/chat/message/${id}`, 'POST', { message: query });
+    const data:any = await callApi(`/chat/message/${id}`, 'POST', { message: query });
     const newModelMessage = {
       message: data?.response,
       sender: 'model',

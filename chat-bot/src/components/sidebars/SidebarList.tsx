@@ -1,6 +1,6 @@
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import Button from '../buttons/Button';
-import { ListOfChats, ListOfNamespaces } from './components';
+import { ListOfChats } from './components';
 import useCallApi from '../../services/axiosService';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -24,6 +24,10 @@ const SidebarList = () => {
   };
 
   const handleNewChat = () => {
+    if(!isLoggedIn){
+      return toast.error("Bạn chưa đăng nhập")
+    }
+    
     setSelectedChatId(null); // Reset selectedChatId
     navigate('/'); // Chuyển hướng về HomePage (hoặc page khác bạn muốn)
   };
@@ -41,18 +45,19 @@ const SidebarList = () => {
         </div>
       </div>
 
-      <div className="px-6 w-full space-y-2 mb-6">
+      {/* <div className="px-6 w-full space-y-2 mb-6">
         <div className="text-xs sm:text-sm lg:text-xl font-semibold leading-6 text-white">
           Your namespaces
         </div>
         <ListOfNamespaces />
-      </div>
+      </div> */}
 
       <div className="px-6 text-xs sm:text-sm lg:text-xl font-semibold leading-6 text-white">
         Your chats
       </div>
       <div className="px-6 overflow-y-auto h-[450px]">
-        <ListOfChats selectedChatId={selectedChatId} setSelectedChatId={setSelectedChatId} />
+        {isLoggedIn ? (<ListOfChats selectedChatId={selectedChatId} setSelectedChatId={setSelectedChatId} />)
+        :(<h5 className='text-red-500 font-semibold text-xs'>You need to login</h5>)}
       </div>
 
       <div className="px-6 mt-2">
@@ -61,7 +66,7 @@ const SidebarList = () => {
           className={`inline-flex justify-center ${isLoggedIn ? 'bg-red-600' : 'bg-white/[27%]'} text-white items-center gap-x-1 rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm w-full`}
         >
           <span className="text-white">
-            {isLoggedIn ? 'Sign out' : 'Sign in'}
+            {isLoggedIn ? 'Log out' : 'Sign in'}
           </span>
           {!isLoggedIn && (
             <span className="text-[#3694FF]">to save your chat history</span>
